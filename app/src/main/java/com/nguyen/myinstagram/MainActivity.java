@@ -1,5 +1,6 @@
 package com.nguyen.myinstagram;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,21 +20,38 @@ import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
    private static final String   CLIENT_ID = "e05c462ebd86446ea48a5af73769b602";
-   private List<Photo>  mPhotos = new ArrayList<>();
-   private Adapter      mAdapter;
+   private PhotosAdapter      mAdapter;
+   private SwipeRefreshLayout mSwipeContainer;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_main);
+
+      // look up the swipe container view
+      mSwipeContainer = (SwipeRefreshLayout)findViewById(R.id.swipe_container);
       // create an adapter linking it to the source
-      mAdapter = new Adapter(this, mPhotos);
+      mAdapter = new PhotosAdapter(this, new ArrayList<Photo>());
       // find the ListView from the layout
-      ListView listView = (ListView)findViewById(R.id.lvPhotos);
-      // bind the Adapter to the ListView
+      ListView listView = (ListView)findViewById(R.id.photos_list_view);
+      // bind the PhotosAdapter to the ListView
       listView.setAdapter(mAdapter);
-      // fetch the popular photos
+      // fetch popular photos upon app startup
       fetchPopularPhotos();
+      // setup refresh listener which triggers new data loading
+      mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+         @Override
+         public void onRefresh() {
+            // fetch popular photos upon swipe refresh
+            fetchPopularPhotos();
+         }
+      });
+      // configure the refreshing colors
+      mSwipeContainer.setColorSchemeColors(
+            android.R.color.holo_blue_bright,
+            android.R.color.holo_green_light,
+            android.R.color.holo_orange_light,
+            android.R.color.holo_red_light);
    }
 
    // this method triggers API requests
@@ -50,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
             // Log.i("NGUYEN", response.toString());
             // iterate each photo item and decode the item into a Photo object
             JSONArray dataJsonArray = null;
+            List<Photo> photos = new ArrayList<>();
             try {
                // "data" JSON array
                dataJsonArray = response.getJSONArray("data");
@@ -59,25 +78,32 @@ public class MainActivity extends AppCompatActivity {
                   JSONObject dataJsonObject = dataJsonArray.getJSONObject(i);
                   // decode the attributes of the JSON into a data model
                   Photo photo = new Photo();
-                  photo.username = dataJsonObject.getJSONObject("user").getString("username");
-                  photo.caption = dataJsonObject.getJSONObject("caption").getString("text");
-                  photo.imageUrl = dataJsonObject.getJSONObject("images").getJSONObject("standard_resolution").getString("url");
-                  photo.imageHeight = dataJsonObject.getJSONObject("images").getJSONObject("standard_resolution").getInt("height");
-                  photo.likesCount = dataJsonObject.getJSONObject("likes").getInt("count");
+                  photo.mUsername = dataJsonObject.getJSONObject("user").getString("username");
+                  photo.mCaption = dataJsonObject.getJSONObject("caption").getString("text");
+                  photo.mImageUrl = dataJsonObject.getJSONObject("images").getJSONObject("standard_resolution").getString("url");
+                  photo.mImageHeight = dataJsonObject.getJSONObject("images").getJSONObject("standard_resolution").getInt("height");
+                  photo.mLikesCount = dataJsonObject.getJSONObject("likes").getInt("count");
                   // add decoded object to the list of Photo's
-                  mPhotos.add(photo);
+                  photos.add(photo);
                }
-            }
-            catch (JSONException e) {
+            } catch (JSONException e) {
                e.printStackTrace();
             }
 
-            mAdapter.notifyDataSetChanged();
+            // clear out old items
+            mAdapter.clear();
+            // add new items to adapter
+            mAdapter.addAll(photos);
+            // there seems no need to call notifyDataSetChanged()
+            // mAdapter.notifyDataSetChanged();
+            // signal refresh has finished
+            mSwipeContainer.setRefreshing(false);
          }
 
          @Override
          public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
             super.onFailure(statusCode, headers, responseString, throwable);
+            Log.d("NGUYEN", "Fetch timeline error: " + throwable.toString());
          }
       });
    }

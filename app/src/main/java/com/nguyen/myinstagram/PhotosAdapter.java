@@ -15,34 +15,30 @@ import java.util.List;
 /**
  * Created by My on 2/3/2016.
  */
-public class Adapter extends ArrayAdapter<Photo> {
-   public Adapter(Context context, List<Photo> objects) {
-      super(context, android.R.layout.simple_list_item_1, objects);
+public class PhotosAdapter extends ArrayAdapter<Photo> {
+   public PhotosAdapter(Context context, List<Photo> objects) {
+      super(context, 0, objects);
    }
 
    @Override
    // use the item_photo.xml to display each photo
    public View getView(int position, View convertView, ViewGroup parent) {
-      // get the data item for this position
+      // extract the Photo at this position
       Photo photo = getItem(position);
-      // check if we're using the RecyclerView
+      // check if an existing view is being reused
       if (convertView == null)
-         // if not create a new View from template
+         // if not inflate a new View from template
          convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_photo, parent, false);
-      // look up the views for populating the data (image, caption)
-      TextView caption = (TextView)convertView.findViewById(R.id.tvCaption);
+      // look up the views
+      TextView caption = (TextView)convertView.findViewById(R.id.caption_text_view);
       // insert the model data into each of the view items
-      caption.setText(photo.caption);
-      ImageView image = (ImageView)convertView.findViewById(R.id.ivPhoto);
+      caption.setText(photo.mCaption);
+      ImageView image = (ImageView)convertView.findViewById(R.id.photo_image_view);
       // clear out the ImageView, since this could be a recycled item
-      // calling setImageResource(0) would cause a crash
-      // image.setImageResource(0);
-      // so call setImageDrawable(null) instead
+      // calling setImageResource(0) would cause a crash, so call setImageDrawable(null) instead
       image.setImageDrawable(null);
       // insert the image using Picasso
-      Picasso.with(getContext()).load(photo.imageUrl).into(image);
-      // return super.getView() was generated
-      // return super.getView(position, convertView, parent);
+      Picasso.with(getContext()).load(photo.mImageUrl).into(image);
       // return the created item as a view
       return convertView;
    }
