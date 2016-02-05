@@ -3,6 +3,7 @@ package com.nguyen.myinstagram;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.widget.ListView;
 
@@ -85,7 +86,13 @@ public class MainActivity extends AppCompatActivity {
                   photo.mImageHeight = dataJsonObject.getJSONObject("images").getJSONObject("standard_resolution").getInt("height");
                   photo.mLikesCount = dataJsonObject.getJSONObject("likes").getInt("count");
                   photo.mCreatedTime = dataJsonObject.getLong("created_time");
-                  Log.i("NGUYEN", "created time: " + photo.mCreatedTime);
+                  JSONArray commentsJsonArray = dataJsonObject.getJSONObject("comments").getJSONArray("data");
+                  int length = commentsJsonArray.length();
+                  photo.mComments[0] = commentsJsonArray.getJSONObject(length-2).getString("text");
+                  photo.mComments[1] = commentsJsonArray.getJSONObject(length-1).getString("text");
+                  photo.mCommenters[0] = commentsJsonArray.getJSONObject(length-2).getJSONObject("from").getString("username");
+                  photo.mCommenters[1] = commentsJsonArray.getJSONObject(length-1).getJSONObject("from").getString("username");
+
                   // add decoded object to the list of Photo's
                   photos.add(photo);
                }

@@ -52,9 +52,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:text="New Text"
         android:id="@+id/caption"
         android:layout_below="@id/likes"
-        android:layout_alignParentLeft="true"
-/>
+        android:layout_alignParentLeft="true"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/next_to_last_comment"
+        android:layout_below="@id/caption"
+        android:layout_alignParentLeft="true"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/last_comment"
+        android:layout_below="@id/next_to_last_comment"
+        android:layout_alignParentLeft="true"/>
 </RelativeLayout>
