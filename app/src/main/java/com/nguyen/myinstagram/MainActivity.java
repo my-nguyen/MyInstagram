@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
          public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
             super.onSuccess(statusCode, headers, response);
             // expecting a JSON object
-            // Log.i("NGUYEN", response.toString());
+            Log.i("NGUYEN", response.toString());
             // iterate each photo item and decode the item into a Photo object
             JSONArray dataJsonArray = null;
             List<Photo> photos = new ArrayList<>();
@@ -79,10 +79,13 @@ public class MainActivity extends AppCompatActivity {
                   // decode the attributes of the JSON into a data model
                   Photo photo = new Photo();
                   photo.mUsername = dataJsonObject.getJSONObject("user").getString("username");
+                  photo.mProfilePictureUrl = dataJsonObject.getJSONObject("user").getString("profile_picture");
                   photo.mCaption = dataJsonObject.getJSONObject("caption").getString("text");
                   photo.mImageUrl = dataJsonObject.getJSONObject("images").getJSONObject("standard_resolution").getString("url");
                   photo.mImageHeight = dataJsonObject.getJSONObject("images").getJSONObject("standard_resolution").getInt("height");
                   photo.mLikesCount = dataJsonObject.getJSONObject("likes").getInt("count");
+                  photo.mCreatedTime = dataJsonObject.getLong("created_time");
+                  Log.i("NGUYEN", "created time: " + photo.mCreatedTime);
                   // add decoded object to the list of Photo's
                   photos.add(photo);
                }
