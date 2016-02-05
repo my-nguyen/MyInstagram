@@ -61,7 +61,7 @@ public class PhotosAdapter extends ArrayAdapter<Photo> {
       // calling setImageResource(0) would cause a crash, so call setImageDrawable(null) instead
       image.setImageDrawable(null);
       // insert the image using Picasso
-      Picasso.with(getContext()).load(photo.mImageUrl).into(image);
+      Picasso.with(getContext()).load(photo.mImageUrl).placeholder(R.drawable.placeholder).into(image);
       // set up caption
       TextView caption = (TextView)view.findViewById(R.id.caption);
       caption.setText(photo.mCaption);
