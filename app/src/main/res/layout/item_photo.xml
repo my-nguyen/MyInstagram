@@ -8,47 +8,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
-            android:id="@+id/profile_picture"
+            android:id="@+id/photo_profile_picture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"/>
-        <!--
-        <com.makeramen.roundedimageview.RoundedImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/profile_picture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="fitCenter"
-            android:src="@drawable/photo1"
-            app:riv_corner_radius="30dip"
-            app:riv_border_width="2dip"
-            app:riv_border_color="#333333"
-            app:riv_mutate_background="true"
-            app:riv_tile_mode="repeat"
-            app:riv_oval="true" />
-            -->
         <TextView
-            android:id="@+id/username"
+            android:id="@+id/photo_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/profile_picture"
-            android:layout_alignTop="@id/profile_picture"
-            android:layout_alignBottom="@id/profile_picture"
+            android:layout_toRightOf="@id/photo_profile_picture"
+            android:layout_alignTop="@id/photo_profile_picture"
+            android:layout_alignBottom="@id/photo_profile_picture"
             android:gravity="center"
-            android:textSize="15dp"
-            android:textColor="@color/colorPrimary"
-            android:textStyle="bold"/>
+            android:textSize="15dp"/>
         <TextView
-            android:id="@+id/created_time"
+            android:id="@+id/photo_created_time"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_alignTop="@id/photo_profile_picture"
+            android:layout_alignBottom="@id/photo_profile_picture"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="15dp"/>
+            android:layout_marginRight="10dp"
+            android:gravity="center"/>
     </RelativeLayout>
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/photo"
+        android:id="@+id/photo_image"
         android:layout_below="@id/top_banner"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -56,32 +42,40 @@
         android:scaleType="fitXY"
         android:minHeight="50dp"/>
     <TextView
-        android:id="@+id/likes"
+        android:id="@+id/photo_likes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/photo"
+        android:layout_below="@id/photo_image"
         android:layout_marginLeft="10dp"
         android:textStyle="bold"
-        android:textColor="@color/colorPrimary"/>
+        android:textColor="@color/dark_blue"/>
     <TextView
+        android:id="@+id/photo_caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:id="@+id/caption"
-        android:layout_below="@id/likes"
+        android:layout_below="@id/photo_likes"
         android:layout_alignParentLeft="true"/>
     <TextView
+        android:id="@+id/photo_view_all_comments"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:id="@+id/next_to_last_comment"
-        android:layout_below="@id/caption"
+        android:textColor="@color/gray"
+        android:layout_below="@id/photo_caption"
         android:layout_alignParentLeft="true"/>
     <TextView
+        android:id="@+id/photo_next_to_last_comment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:id="@+id/last_comment"
-        android:layout_below="@id/next_to_last_comment"
+        android:layout_below="@id/photo_view_all_comments"
+        android:layout_alignParentLeft="true"/>
+    <TextView
+        android:id="@+id/photo_last_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@id/photo_next_to_last_comment"
         android:layout_alignParentLeft="true"/>
 </RelativeLayout>

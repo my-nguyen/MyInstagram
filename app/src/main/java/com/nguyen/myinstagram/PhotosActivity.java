@@ -3,7 +3,6 @@ package com.nguyen.myinstagram;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.widget.ListView;
 
@@ -19,7 +18,7 @@ import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
-public class MainActivity extends AppCompatActivity {
+public class PhotosActivity extends AppCompatActivity {
    private static final String   CLIENT_ID = "e05c462ebd86446ea48a5af73769b602";
    private PhotosAdapter      mAdapter;
    private SwipeRefreshLayout mSwipeContainer;
@@ -34,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
       // create an adapter linking it to the source
       mAdapter = new PhotosAdapter(this, new ArrayList<Photo>());
       // find the ListView from the layout
-      ListView listView = (ListView)findViewById(R.id.photos_list_view);
+      ListView listView = (ListView)findViewById(R.id.photos);
       // bind the PhotosAdapter to the ListView
       listView.setAdapter(mAdapter);
       // fetch popular photos upon app startup
@@ -75,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                dataJsonArray = response.getJSONArray("data");
                // iterate thru "data" JSON array
                for (int i = 0; i < dataJsonArray.length(); i++) {
-                  // get the "data" JSON object at that position
+                  // get the "data" JSON object at ith position
                   JSONObject dataJsonObject = dataJsonArray.getJSONObject(i);
                   // decode the attributes of the JSON into a data model
                   Photo photo = new Photo();
@@ -86,12 +85,18 @@ public class MainActivity extends AppCompatActivity {
                   photo.mImageHeight = dataJsonObject.getJSONObject("images").getJSONObject("standard_resolution").getInt("height");
                   photo.mLikesCount = dataJsonObject.getJSONObject("likes").getInt("count");
                   photo.mCreatedTime = dataJsonObject.getLong("created_time");
+                  // Log.i("NGUYEN", "PHOTO: " + photo.toString());
                   JSONArray commentsJsonArray = dataJsonObject.getJSONObject("comments").getJSONArray("data");
-                  int length = commentsJsonArray.length();
-                  photo.mComments[0] = commentsJsonArray.getJSONObject(length-2).getString("text");
-                  photo.mComments[1] = commentsJsonArray.getJSONObject(length-1).getString("text");
-                  photo.mCommenters[0] = commentsJsonArray.getJSONObject(length-2).getJSONObject("from").getString("username");
-                  photo.mCommenters[1] = commentsJsonArray.getJSONObject(length-1).getJSONObject("from").getString("username");
+                  for (int j = 0; j < commentsJsonArray.length(); j++) {
+                     JSONObject commentJsonObject = commentsJsonArray.getJSONObject(j);
+                     Comment comment = new Comment();
+                     comment.mProfilePictureUrl = commentJsonObject.getJSONObject("from").getString("profile_picture");
+                     comment.mUsername = commentJsonObject.getJSONObject("from").getString("username");
+                     comment.mText = commentJsonObject.getString("text");
+                     comment.mCreatedTime = commentJsonObject.getLong("created_time");
+                     // Log.i("NGUYEN", "COMMENT: " + comment.toString());
+                     photo.mComments.add(comment);
+                  }
 
                   // add decoded object to the list of Photo's
                   photos.add(photo);
