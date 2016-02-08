@@ -53,7 +53,7 @@ public class PhotosAdapter extends ArrayAdapter<Photo> {
          // instead. then insert the image using Picasso
          ImageView image = (ImageView) view.findViewById(R.id.photo_image);
          image.setImageDrawable(null);
-         Picasso.with(getContext()).load(photo.mImageUrl).fit().placeholder(R.drawable.placeholder).into(image);
+         Picasso.with(getContext()).load(photo.mImageUrl).resize(0, photo.mImageHeight).placeholder(R.drawable.placeholder).into(image);
       }
       else {
          // set up videoView
