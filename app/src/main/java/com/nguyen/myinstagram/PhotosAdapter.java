@@ -44,6 +44,9 @@ public class PhotosAdapter extends ArrayAdapter<Photo> {
       // set up relative timestamp
       TextView createdTime = (TextView)view.findViewById(R.id.photo_created_time);
       createdTime.setText(Utils.timeAgo(photo.mCreatedTime));
+      // set up heart
+      ImageView heart = (ImageView)view.findViewById(R.id.photo_heart);
+      Picasso.with(getContext()).load(R.drawable.blueheart).resize(25, 0).into(heart);
       // set up likes count
       TextView likes = (TextView)view.findViewById(R.id.photo_likes);
       likes.setText(String.format("%,d", photo.mLikesCount) + " likes");
