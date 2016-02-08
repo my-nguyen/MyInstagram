@@ -28,7 +28,7 @@ public class CommentsAdapter extends ArrayAdapter<Comment> {
          view = LayoutInflater.from(getContext()).inflate(R.layout.item_comment, parent, false);
       // set up profile picture
       ImageView profilePicture = (ImageView)view.findViewById(R.id.comment_profile_picture);
-      Picasso.with(getContext()).load(comment.mProfilePictureUrl).transform(new CircleTransform()).into(profilePicture);
+      Picasso.with(getContext()).load(comment.mProfilePictureUrl).resize(75, 0).transform(new CircleTransform()).into(profilePicture);
       // set up username
       TextView username = (TextView)view.findViewById(R.id.comment_username);
       username.setText(Utils.htmlUsername(comment.mUsername));

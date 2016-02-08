@@ -37,7 +37,7 @@ public class PhotosAdapter extends ArrayAdapter<Photo> {
 
       // set up profile picture
       ImageView profilePicture = (ImageView)view.findViewById(R.id.photo_profile_picture);
-      Picasso.with(getContext()).load(photo.mProfilePictureUrl).transform(new CircleTransform()).into(profilePicture);
+      Picasso.with(getContext()).load(photo.mProfilePictureUrl).resize(75, 0).transform(new CircleTransform()).into(profilePicture);
       // set up username
       TextView username = (TextView)view.findViewById(R.id.photo_username);
       username.setText(Utils.htmlUsername(photo.mUsername));
@@ -53,7 +53,7 @@ public class PhotosAdapter extends ArrayAdapter<Photo> {
          // instead. then insert the image using Picasso
          ImageView image = (ImageView) view.findViewById(R.id.photo_image);
          image.setImageDrawable(null);
-         Picasso.with(getContext()).load(photo.mImageUrl).placeholder(R.drawable.placeholder).into(image);
+         Picasso.with(getContext()).load(photo.mImageUrl).fit().placeholder(R.drawable.placeholder).into(image);
       }
       else {
          // set up videoView
