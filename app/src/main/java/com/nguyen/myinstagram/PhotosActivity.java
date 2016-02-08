@@ -26,7 +26,7 @@ public class PhotosActivity extends AppCompatActivity {
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      setContentView(R.layout.activity_main);
+      setContentView(R.layout.activity_photos);
 
       // look up the swipe container view
       mSwipeContainer = (SwipeRefreshLayout)findViewById(R.id.swipe_container);
@@ -73,6 +73,7 @@ public class PhotosActivity extends AppCompatActivity {
                // "data" JSON array
                dataJsonArray = response.getJSONArray("data");
                // iterate thru "data" JSON array
+               Log.i("NGUYEN", dataJsonArray.length() + " JSON objects");
                for (int i = 0; i < dataJsonArray.length(); i++) {
                   // get the "data" JSON object at ith position
                   JSONObject dataJsonObject = dataJsonArray.getJSONObject(i);
@@ -80,12 +81,20 @@ public class PhotosActivity extends AppCompatActivity {
                   Photo photo = new Photo();
                   photo.mUsername = dataJsonObject.getJSONObject("user").getString("username");
                   photo.mProfilePictureUrl = dataJsonObject.getJSONObject("user").getString("profile_picture");
-                  photo.mCaption = dataJsonObject.getJSONObject("caption").getString("text");
+                  if (dataJsonObject.has("caption") && !dataJsonObject.isNull("caption"))
+                     photo.mCaption = dataJsonObject.getJSONObject("caption").getString("text");
+                  else {
+                     Log.i("NGUYEN", "at " + i + ", " + photo.mUsername + " has no caption");
+                     photo.mCaption = "";
+                  }
                   photo.mImageUrl = dataJsonObject.getJSONObject("images").getJSONObject("standard_resolution").getString("url");
+                  if (dataJsonObject.has("videos")) {
+                     photo.mVideoUrl = dataJsonObject.getJSONObject("videos").getJSONObject("standard_resolution").getString("url");
+                     Log.i("NGUYEN", "at " + i + ", " + photo.mUsername + " has video from " + photo.mVideoUrl);
+                  }
                   photo.mImageHeight = dataJsonObject.getJSONObject("images").getJSONObject("standard_resolution").getInt("height");
                   photo.mLikesCount = dataJsonObject.getJSONObject("likes").getInt("count");
                   photo.mCreatedTime = dataJsonObject.getLong("created_time");
-                  // Log.i("NGUYEN", "PHOTO: " + photo.toString());
                   JSONArray commentsJsonArray = dataJsonObject.getJSONObject("comments").getJSONArray("data");
                   for (int j = 0; j < commentsJsonArray.length(); j++) {
                      JSONObject commentJsonObject = commentsJsonArray.getJSONObject(j);
@@ -94,7 +103,6 @@ public class PhotosActivity extends AppCompatActivity {
                      comment.mUsername = commentJsonObject.getJSONObject("from").getString("username");
                      comment.mText = commentJsonObject.getString("text");
                      comment.mCreatedTime = commentJsonObject.getLong("created_time");
-                     // Log.i("NGUYEN", "COMMENT: " + comment.toString());
                      photo.mComments.add(comment);
                   }
 

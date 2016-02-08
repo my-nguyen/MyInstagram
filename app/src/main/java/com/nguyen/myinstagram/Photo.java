@@ -12,6 +12,7 @@ public class Photo {
    public String        mProfilePictureUrl;
    public String        mCaption;
    public String        mImageUrl;
+   public String        mVideoUrl;
    public int           mImageHeight;
    public int           mLikesCount;
    public long          mCreatedTime;

@@ -2,15 +2,19 @@ package com.nguyen.myinstagram;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,16 +47,35 @@ public class PhotosAdapter extends ArrayAdapter<Photo> {
       // set up likes count
       TextView likes = (TextView)view.findViewById(R.id.photo_likes);
       likes.setText(String.format("%,d", photo.mLikesCount) + " likes");
-      // set up central photo
-      ImageView image = (ImageView)view.findViewById(R.id.photo_image);
-      // clear out the ImageView, since this could be a recycled item
-      // calling setImageResource(0) would cause a crash, so call setImageDrawable(null) instead
-      image.setImageDrawable(null);
-      // insert the image using Picasso
-      Picasso.with(getContext()).load(photo.mImageUrl).placeholder(R.drawable.placeholder).into(image);
+      if (photo.mVideoUrl == null) {
+         // set up central photo. first clear out the ImageView, since this could be a recycled item
+         // but since calling setImageResource(0) would cause a crash, call setImageDrawable(null)
+         // instead. then insert the image using Picasso
+         ImageView image = (ImageView) view.findViewById(R.id.photo_image);
+         image.setImageDrawable(null);
+         Picasso.with(getContext()).load(photo.mImageUrl).placeholder(R.drawable.placeholder).into(image);
+      }
+      else {
+         // set up videoView
+         final VideoView videoView = (VideoView)view.findViewById(R.id.photo_video);
+         videoView.setVideoPath(photo.mVideoUrl);
+         Log.i("NGUYEN", "setting up video from " + photo.mVideoUrl);
+         MediaController mediaController = new MediaController(getContext());
+         mediaController.setAnchorView(videoView);
+         videoView.setMediaController(mediaController);
+         videoView.requestFocus();
+         videoView.start();
+         /*
+         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            public void onPrepared(MediaPlayer mp) {
+               Log.i("NGUYEN", "PLAYING videoView from " + photo.mVideoUrl);
+               videoView.start();
+            }
+         });
+         */
+      }
       // set up caption
       TextView caption = (TextView)view.findViewById(R.id.photo_caption);
-      // caption.setText(photo.mCaption);
       caption.setText(Utils.htmlText(photo.mUsername, photo.mCaption));
       // set up "view all comments"
       TextView viewAllComments = (TextView)view.findViewById(R.id.photo_view_all_comments);
@@ -60,18 +83,30 @@ public class PhotosAdapter extends ArrayAdapter<Photo> {
       viewAllComments.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-            Intent intent = CommentsActivity.newIntent(getContext(), photo.mComments);
+            Comment header = new Comment(photo.mProfilePictureUrl, photo.mUsername, photo.mCaption, photo.mCreatedTime);
+            // build a list of Comment's that's comprised of a header and all the accompanying
+            // Comments. a header is a special Comment object that includes the original caption and
+            // all the relevant info such as profile image, username and created time.
+            List<Comment> comments = new ArrayList<>();
+            comments.add(header);
+            comments.addAll(photo.mComments);
+            // start CommentsActivity
+            Intent intent = CommentsActivity.newIntent(getContext(), comments);
             getContext().startActivity(intent);
          }
       });
-      // set up next-to-last comment
-      TextView nextToLastCommentView = (TextView)view.findViewById(R.id.photo_next_to_last_comment);
-      Comment nextToLastCommentModel = photo.mComments.get(photo.mComments.size() - 2);
-      nextToLastCommentView.setText(Utils.htmlText(nextToLastCommentModel.mUsername, nextToLastCommentModel.mText));
-      // set up last comment
-      TextView lastCommentView = (TextView)view.findViewById(R.id.photo_last_comment);
-      Comment lastCommentModel = photo.mComments.get(photo.mComments.size() - 1);
-      lastCommentView.setText(Utils.htmlText(lastCommentModel.mUsername, lastCommentModel.mText));
+      if (photo.mComments.size() >= 1) {
+         if (photo.mComments.size() >= 2) {
+            // set up next-to-last comment
+            TextView nextToLastCommentView = (TextView) view.findViewById(R.id.photo_next_to_last_comment);
+            Comment nextToLastCommentModel = photo.mComments.get(photo.mComments.size() - 2);
+            nextToLastCommentView.setText(Utils.htmlText(nextToLastCommentModel.mUsername, nextToLastCommentModel.mText));
+         }
+         // set up last comment
+         TextView lastCommentView = (TextView) view.findViewById(R.id.photo_last_comment);
+         Comment lastCommentModel = photo.mComments.get(photo.mComments.size() - 1);
+         lastCommentView.setText(Utils.htmlText(lastCommentModel.mUsername, lastCommentModel.mText));
+      }
 
       // return the created item as a view
       return view;

@@ -17,6 +17,13 @@ public class Comment implements Parcelable {
    public Comment() {
    }
 
+   public Comment(String profilePictureUrl, String username, String text, long createdTime) {
+      mProfilePictureUrl = profilePictureUrl;
+      mUsername = username;
+      mText = text;
+      mCreatedTime = createdTime;
+   }
+
    @Override
    public String toString() {
       return "profile URL: " + mProfilePictureUrl + ", username: " + mUsername + ", text: " + mText + ", created at: " + mCreatedTime;

@@ -24,7 +24,6 @@ public class CommentsAdapter extends ArrayAdapter<Comment> {
    @Override
    public View getView(int position, View view, ViewGroup parent) {
       Comment comment = getItem(position);
-      Log.i("NGUYEN", "COMMENT: " + comment.toString());
       if (view == null)
          view = LayoutInflater.from(getContext()).inflate(R.layout.item_comment, parent, false);
       // set up profile picture
