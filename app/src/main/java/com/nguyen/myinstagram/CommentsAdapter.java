@@ -21,23 +21,40 @@ public class CommentsAdapter extends ArrayAdapter<Comment> {
       super(context, 0, comments);
    }
 
+   // View lookup cache
+   private static class ViewHolder {
+      ImageView profilePicture;
+      TextView username;
+      TextView text;
+      TextView createdTime;
+   }
+
    @Override
    public View getView(int position, View view, ViewGroup parent) {
       Comment comment = getItem(position);
-      if (view == null)
+      // view lookup cache stored in tag
+      ViewHolder viewHolder = new ViewHolder();
+      if (view == null) {
          view = LayoutInflater.from(getContext()).inflate(R.layout.item_comment, parent, false);
+
+         viewHolder.profilePicture = (ImageView)view.findViewById(R.id.comment_profile_picture);
+         viewHolder.username = (TextView)view.findViewById(R.id.comment_username);
+         viewHolder.text = (TextView)view.findViewById(R.id.comment_text);
+         viewHolder.createdTime = (TextView)view.findViewById(R.id.comment_created_time);
+         view.setTag(viewHolder);
+      }
+      else
+         viewHolder = (ViewHolder)view.getTag();
+
       // set up profile picture
-      ImageView profilePicture = (ImageView)view.findViewById(R.id.comment_profile_picture);
-      Picasso.with(getContext()).load(comment.mProfilePictureUrl).resize(75, 0).transform(new CircleTransform()).into(profilePicture);
+      Picasso.with(getContext()).load(comment.mProfilePictureUrl).resize(75, 0)
+            .transform(new CircleTransform()).into(viewHolder.profilePicture);
       // set up username
-      TextView username = (TextView)view.findViewById(R.id.comment_username);
-      username.setText(Utils.htmlUsername(comment.mUsername));
+      viewHolder.username.setText(Utils.htmlUsername(comment.mUsername));
       // set up comment text
-      TextView text = (TextView)view.findViewById(R.id.comment_text);
-      text.setText(Utils.htmlText(comment.mText));
+      viewHolder.text.setText(Utils.htmlText(comment.mText));
       // set up relative timestamp
-      TextView createdTime = (TextView)view.findViewById(R.id.comment_created_time);
-      createdTime.setText(Utils.timeAgo(comment.mCreatedTime));
+      viewHolder.createdTime.setText(Utils.timeAgo(comment.mCreatedTime));
 
       return view;
    }
