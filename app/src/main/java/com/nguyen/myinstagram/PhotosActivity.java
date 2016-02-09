@@ -81,14 +81,14 @@ public class PhotosActivity extends AppCompatActivity {
                   Photo photo = new Photo();
                   photo.mUsername = dataJsonObject.getJSONObject("user").getString("username");
                   photo.mProfilePictureUrl = dataJsonObject.getJSONObject("user").getString("profile_picture");
-                  if (dataJsonObject.has("caption") && !dataJsonObject.isNull("caption"))
+                  if (!dataJsonObject.isNull("caption"))
                      photo.mCaption = dataJsonObject.getJSONObject("caption").getString("text");
                   else {
                      Log.i("NGUYEN", "at " + i + ", " + photo.mUsername + " has no caption");
                      photo.mCaption = "";
                   }
                   JSONObject mediaJsonObject;
-                  if (dataJsonObject.has("videos")) {
+                  if (!dataJsonObject.isNull("videos")) {
                      mediaJsonObject = dataJsonObject.getJSONObject("videos").getJSONObject("standard_resolution");
                      photo.mMediaType = Photo.VIDEO_VIEW;
                      Log.i("NGUYEN", "at " + i + ", " + photo.mUsername + " has video ");
