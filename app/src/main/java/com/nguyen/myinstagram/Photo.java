@@ -28,4 +28,10 @@ public class Photo {
             .append(", likes: ").append(mLikesCount).append(", created at: ").append(mCreatedTime);
       return builder.toString();
    }
+
+   public String toString2() {
+      StringBuilder builder = new StringBuilder();
+      builder.append(mUsername).append(": ").append(mMediaType == IMAGE_VIEW ? "image, " : ", video, ").append(mCaption);
+      return builder.toString();
+   }
 }

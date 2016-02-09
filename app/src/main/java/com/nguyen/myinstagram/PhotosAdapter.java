@@ -53,13 +53,15 @@ public class PhotosAdapter extends ArrayAdapter<Photo> {
    }
 
    // view lookup cache stored in tag
-   ViewHolder viewHolder = new ViewHolder();
+   ViewHolder viewHolder;
 
    @Override
    // use item.xml for each photo
    public View getView(int position, View view, ViewGroup parent) {
       // extract the Photo at this position
       final Photo photo = getItem(position);
+      // reset ViewHolder
+      viewHolder = new ViewHolder();
       // check if this View is being recycled
       if (view == null) {
          // not recycled: inflate new View
@@ -117,7 +119,6 @@ public class PhotosAdapter extends ArrayAdapter<Photo> {
          viewHolder.video.getLayoutParams().width = widthPixels;
          viewHolder.video.getLayoutParams().height = (int)(widthPixels * ratio);
          viewHolder.video.setVideoPath(photo.mMedia.mUrl);
-         Log.i("NGUYEN", "video, " + photo.mMedia);
          MediaController mediaController = new MediaController(getContext());
          mediaController.setAnchorView(viewHolder.video);
          viewHolder.video.setMediaController(mediaController);

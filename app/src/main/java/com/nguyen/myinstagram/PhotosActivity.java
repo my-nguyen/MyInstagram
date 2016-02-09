@@ -115,7 +115,7 @@ public class PhotosActivity extends AppCompatActivity {
                   }
 
                   // add decoded object to the list of Photo's
-                  // if (photo.mMediaType == Photo.IMAGE_VIEW)
+                  // Log.i("NGUYEN", photo.toString2());
                   photos.add(photo);
                }
             } catch (JSONException e) {
