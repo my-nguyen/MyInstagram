@@ -87,12 +87,20 @@ public class PhotosActivity extends AppCompatActivity {
                      Log.i("NGUYEN", "at " + i + ", " + photo.mUsername + " has no caption");
                      photo.mCaption = "";
                   }
-                  photo.mImageUrl = dataJsonObject.getJSONObject("images").getJSONObject("standard_resolution").getString("url");
+                  JSONObject mediaJsonObject;
                   if (dataJsonObject.has("videos")) {
-                     photo.mVideoUrl = dataJsonObject.getJSONObject("videos").getJSONObject("standard_resolution").getString("url");
-                     Log.i("NGUYEN", "at " + i + ", " + photo.mUsername + " has video from " + photo.mVideoUrl);
+                     mediaJsonObject = dataJsonObject.getJSONObject("videos").getJSONObject("standard_resolution");
+                     photo.mMediaType = Photo.VIDEO_VIEW;
+                     Log.i("NGUYEN", "at " + i + ", " + photo.mUsername + " has video from " + mediaJsonObject.getString("url"));
                   }
-                  photo.mImageHeight = dataJsonObject.getJSONObject("images").getJSONObject("standard_resolution").getInt("height");
+                  else {
+                     mediaJsonObject = dataJsonObject.getJSONObject("images").getJSONObject("standard_resolution");
+                     photo.mMediaType = Photo.IMAGE_VIEW;
+                  }
+                  photo.mMedia = new Media();
+                  photo.mMedia.mUrl = mediaJsonObject.getString("url");
+                  photo.mMedia.mWidth = mediaJsonObject.getInt("width");
+                  photo.mMedia.mHeight = mediaJsonObject.getInt("height");
                   photo.mLikesCount = dataJsonObject.getJSONObject("likes").getInt("count");
                   photo.mCreatedTime = dataJsonObject.getLong("created_time");
                   JSONArray commentsJsonArray = dataJsonObject.getJSONObject("comments").getJSONArray("data");
@@ -107,6 +115,7 @@ public class PhotosActivity extends AppCompatActivity {
                   }
 
                   // add decoded object to the list of Photo's
+                  // if (photo.mMediaType == Photo.IMAGE_VIEW)
                   photos.add(photo);
                }
             } catch (JSONException e) {

@@ -2,6 +2,7 @@ package com.nguyen.myinstagram;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,14 +27,27 @@ public class PhotosAdapter extends ArrayAdapter<Photo> {
    }
 
    @Override
+   public int getViewTypeCount() {
+      return 2;
+   }
+
+   @Override
+   public int getItemViewType(int position) {
+      return getItem(position).mMediaType;
+   }
+
+   @Override
    // use item.xml for each photo
    public View getView(int position, View view, ViewGroup parent) {
       // extract the Photo at this position
       final Photo photo = getItem(position);
       // check if an existing view is being reused
-      if (view == null)
+      if (view == null) {
          // if not inflate a new View from template
-         view = LayoutInflater.from(getContext()).inflate(R.layout.item_photo, parent, false);
+         int resource = getItemViewType(position) == Photo.IMAGE_VIEW ? R.layout.item_photo : R.layout.item_video;
+         // resource = R.layout.item_photo;
+         view = LayoutInflater.from(getContext()).inflate(resource, parent, false);
+      }
 
       // set up profile picture
       ImageView profilePicture = (ImageView)view.findViewById(R.id.photo_profile_picture);
@@ -50,32 +64,33 @@ public class PhotosAdapter extends ArrayAdapter<Photo> {
       // set up likes count
       TextView likes = (TextView)view.findViewById(R.id.photo_likes);
       likes.setText(String.format("%,d", photo.mLikesCount) + " likes");
-      if (photo.mVideoUrl == null) {
+      if (photo.mMediaType == Photo.IMAGE_VIEW) {
          // set up central photo. first clear out the ImageView, since this could be a recycled item
          // but since calling setImageResource(0) would cause a crash, call setImageDrawable(null)
          // instead. then insert the image using Picasso
-         ImageView image = (ImageView) view.findViewById(R.id.photo_image);
+         ImageView image = (ImageView) view.findViewById(R.id.photo_media);
          image.setImageDrawable(null);
-         Picasso.with(getContext()).load(photo.mImageUrl).resize(0, photo.mImageHeight).placeholder(R.drawable.placeholder).into(image);
+         // Log.i("NGUYEN", "loading image, " + photo.mMedia.toString());
+         Picasso.with(getContext()).load(photo.mMedia.mUrl).placeholder(R.drawable.placeholder).into(image);
       }
       else {
-         // set up videoView
-         final VideoView videoView = (VideoView)view.findViewById(R.id.photo_video);
-         videoView.setVideoPath(photo.mVideoUrl);
-         Log.i("NGUYEN", "setting up video from " + photo.mVideoUrl);
+         // set up video
+         final VideoView video = (VideoView)view.findViewById(R.id.photo_media);
+         video.getLayoutParams().height = photo.mMedia.mHeight;
+         video.getLayoutParams().width = getContext().getResources().getDisplayMetrics().widthPixels;
+         video.setVideoPath(photo.mMedia.mUrl);
+         Log.i("NGUYEN", "setting up video from " + photo.mMedia.mUrl);
          MediaController mediaController = new MediaController(getContext());
-         mediaController.setAnchorView(videoView);
-         videoView.setMediaController(mediaController);
-         videoView.requestFocus();
-         videoView.start();
-         /*
-         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+         mediaController.setAnchorView(video);
+         video.setMediaController(mediaController);
+         video.requestFocus();
+         // video.start();
+         video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             public void onPrepared(MediaPlayer mp) {
-               Log.i("NGUYEN", "PLAYING videoView from " + photo.mVideoUrl);
-               videoView.start();
+               Log.i("NGUYEN", "PLAYING video from " + photo.mMedia.mUrl);
+               video.start();
             }
          });
-         */
       }
       // set up caption
       TextView caption = (TextView)view.findViewById(R.id.photo_caption);

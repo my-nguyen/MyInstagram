@@ -29,6 +29,7 @@ public class Comment implements Parcelable {
       return "profile URL: " + mProfilePictureUrl + ", username: " + mUsername + ", text: " + mText + ", created at: " + mCreatedTime;
    }
 
+   // below is Parcelable implementation
    @Override
    public int describeContents() {
       return 0;
