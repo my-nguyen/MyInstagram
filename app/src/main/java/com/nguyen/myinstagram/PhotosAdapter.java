@@ -101,21 +101,17 @@ public class PhotosAdapter extends ArrayAdapter<Photo> {
       viewHolder.createdTime.setText(Utils.timeAgo(photo.mCreatedTime));
       // set up media (photo or video)
       int widthPixels = getContext().getResources().getDisplayMetrics().widthPixels;
-      float ratio = photo.mMedia.mHeight / photo.mMedia.mWidth;
       if (photo.mMediaType == Photo.IMAGE_VIEW) {
          // set up central photo. first clear out the ImageView, since this could be a recycled item
          // calling setImageResource(0) would cause a crash, so call setImageDrawable(null) instead
          viewHolder.image.setImageDrawable(null);
-         // set the ImageView width to screen width and the height to correct calculated height to
-         // maintain the aspect ratio of the image
-         viewHolder.image.getLayoutParams().width = widthPixels;
-         viewHolder.image.getLayoutParams().height = (int)(widthPixels * ratio);
          // insert the image using Picasso
-         Picasso.with(getContext()).load(photo.mMedia.mUrl).placeholder(R.drawable.placeholder)
-               .into(viewHolder.image);
+         Picasso.with(getContext()).load(photo.mMedia.mUrl).resize(widthPixels, 0)
+               .placeholder(R.drawable.placeholder).into(viewHolder.image);
       }
       else {
          // set up video
+         float ratio = photo.mMedia.mHeight / photo.mMedia.mWidth;
          viewHolder.video.getLayoutParams().width = widthPixels;
          viewHolder.video.getLayoutParams().height = (int)(widthPixels * ratio);
          viewHolder.video.setVideoPath(photo.mMedia.mUrl);
