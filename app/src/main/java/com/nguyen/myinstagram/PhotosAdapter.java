@@ -3,6 +3,7 @@ package com.nguyen.myinstagram;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,40 +59,44 @@ public class PhotosAdapter extends ArrayAdapter<Photo> {
       // set up relative timestamp
       TextView createdTime = (TextView)view.findViewById(R.id.photo_created_time);
       createdTime.setText(Utils.timeAgo(photo.mCreatedTime));
+      // set up media (photo or video)
+      int widthPixels = getContext().getResources().getDisplayMetrics().widthPixels;
+      float ratio = photo.mMedia.mHeight / photo.mMedia.mWidth;
+      if (photo.mMediaType == Photo.IMAGE_VIEW) {
+         // set up central photo. first clear out the ImageView, since this could be a recycled item
+         ImageView image = (ImageView) view.findViewById(R.id.photo_media);
+         // calling setImageResource(0) would cause a crash, so call setImageDrawable(null) instead
+         image.setImageDrawable(null);
+         // set the ImageView width to screen width and the height to correct calculated height to
+         // maintain the aspect ratio of the image
+         image.getLayoutParams().width = widthPixels;
+         image.getLayoutParams().height = (int)(widthPixels * ratio);
+         // insert the image using Picasso
+         Picasso.with(getContext()).load(photo.mMedia.mUrl).placeholder(R.drawable.placeholder).into(image);
+      }
+      else {
+         // set up video
+         final VideoView video = (VideoView)view.findViewById(R.id.photo_media);
+         video.getLayoutParams().width = widthPixels;
+         video.getLayoutParams().height = (int)(widthPixels * ratio);
+         video.setVideoPath(photo.mMedia.mUrl);
+         Log.i("NGUYEN", "video, " + photo.mMedia);
+         MediaController mediaController = new MediaController(getContext());
+         mediaController.setAnchorView(video);
+         video.setMediaController(mediaController);
+         video.requestFocus();
+         video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            public void onPrepared(MediaPlayer mp) {
+               video.start();
+            }
+         });
+      }
       // set up heart
       ImageView heart = (ImageView)view.findViewById(R.id.photo_heart);
       Picasso.with(getContext()).load(R.drawable.blueheart).resize(25, 0).into(heart);
       // set up likes count
       TextView likes = (TextView)view.findViewById(R.id.photo_likes);
       likes.setText(String.format("%,d", photo.mLikesCount) + " likes");
-      if (photo.mMediaType == Photo.IMAGE_VIEW) {
-         // set up central photo. first clear out the ImageView, since this could be a recycled item
-         // but since calling setImageResource(0) would cause a crash, call setImageDrawable(null)
-         // instead. then insert the image using Picasso
-         ImageView image = (ImageView) view.findViewById(R.id.photo_media);
-         image.setImageDrawable(null);
-         // Log.i("NGUYEN", "loading image, " + photo.mMedia.toString());
-         Picasso.with(getContext()).load(photo.mMedia.mUrl).placeholder(R.drawable.placeholder).into(image);
-      }
-      else {
-         // set up video
-         final VideoView video = (VideoView)view.findViewById(R.id.photo_media);
-         video.getLayoutParams().height = photo.mMedia.mHeight;
-         video.getLayoutParams().width = getContext().getResources().getDisplayMetrics().widthPixels;
-         video.setVideoPath(photo.mMedia.mUrl);
-         Log.i("NGUYEN", "setting up video from " + photo.mMedia.mUrl);
-         MediaController mediaController = new MediaController(getContext());
-         mediaController.setAnchorView(video);
-         video.setMediaController(mediaController);
-         video.requestFocus();
-         // video.start();
-         video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            public void onPrepared(MediaPlayer mp) {
-               Log.i("NGUYEN", "PLAYING video from " + photo.mMedia.mUrl);
-               video.start();
-            }
-         });
-      }
       // set up caption
       TextView caption = (TextView)view.findViewById(R.id.photo_caption);
       caption.setText(Utils.htmlText(photo.mUsername, photo.mCaption));

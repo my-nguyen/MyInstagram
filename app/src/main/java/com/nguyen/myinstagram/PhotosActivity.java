@@ -91,7 +91,7 @@ public class PhotosActivity extends AppCompatActivity {
                   if (dataJsonObject.has("videos")) {
                      mediaJsonObject = dataJsonObject.getJSONObject("videos").getJSONObject("standard_resolution");
                      photo.mMediaType = Photo.VIDEO_VIEW;
-                     Log.i("NGUYEN", "at " + i + ", " + photo.mUsername + " has video from " + mediaJsonObject.getString("url"));
+                     Log.i("NGUYEN", "at " + i + ", " + photo.mUsername + " has video ");
                   }
                   else {
                      mediaJsonObject = dataJsonObject.getJSONObject("images").getJSONObject("standard_resolution");
