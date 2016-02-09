@@ -32,7 +32,7 @@
             android:gravity="center"/>
     </RelativeLayout>
     <ImageView
-        android:id="@+id/photo_media"
+        android:id="@+id/photo_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/top_banner"
@@ -47,13 +47,13 @@
         android:layout_height="wrap_content"
         android:src="@drawable/blueheart"
         android:layout_marginTop="5dp"
-        android:layout_below="@id/photo_media"
+        android:layout_below="@id/photo_image"
         android:layout_marginLeft="10dp"/>
     <TextView
         android:id="@+id/photo_likes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/photo_media"
+        android:layout_below="@id/photo_image"
         android:layout_toRightOf="@id/photo_heart"
         android:layout_marginLeft="4dp"
         android:textStyle="bold"

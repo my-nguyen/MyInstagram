@@ -74,9 +74,9 @@ public class PhotosAdapter extends ArrayAdapter<Photo> {
          viewHolder.username = (TextView)view.findViewById(R.id.photo_username);
          viewHolder.createdTime = (TextView)view.findViewById(R.id.photo_created_time);
          if (photo.mMediaType == Photo.IMAGE_VIEW)
-            viewHolder.image = (ImageView) view.findViewById(R.id.photo_media);
+            viewHolder.image = (ImageView) view.findViewById(R.id.photo_image);
          else
-            viewHolder.video = (VideoView)view.findViewById(R.id.photo_media);
+            viewHolder.video = (VideoView)view.findViewById(R.id.photo_video);
          viewHolder.heart = (ImageView)view.findViewById(R.id.photo_heart);
          viewHolder.likes = (TextView)view.findViewById(R.id.photo_likes);
          viewHolder.caption = (TextView)view.findViewById(R.id.photo_caption);
