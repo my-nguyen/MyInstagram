@@ -8,6 +8,8 @@ import android.widget.ListView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.twotoasters.jazzylistview.JazzyListView;
+import com.twotoasters.jazzylistview.effects.SlideInEffect;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,7 +35,9 @@ public class PhotosActivity extends AppCompatActivity {
       // create an adapter linking it to the source
       mAdapter = new PhotosAdapter(this, new ArrayList<Photo>());
       // find the ListView from the layout
-      ListView listView = (ListView)findViewById(R.id.photos);
+      JazzyListView listView = (JazzyListView)findViewById(R.id.photos);
+      // animate list item views as they become visible
+      listView.setTransitionEffect(new SlideInEffect());
       // bind the PhotosAdapter to the ListView
       listView.setAdapter(mAdapter);
       // fetch popular photos upon app startup

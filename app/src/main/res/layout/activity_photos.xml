@@ -4,7 +4,7 @@
     android:id="@+id/swipe_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ListView
+    <com.twotoasters.jazzylistview.JazzyListView
         android:id="@+id/photos"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
